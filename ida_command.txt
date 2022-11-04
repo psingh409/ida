@@ -1,0 +1,32 @@
+python x509_ida_token.py -crt bootstrap.ida.prod.aws.jpmchase.net.cer -key bootstrap.ida.prod.aws.jpmchase.net.privatekey -pass_phrase null -client_id CC-110252-H015417-173910-PROD -resource_id JPMC:URI:RS-103752-21346-GTIDPOServiceMgt-PROD -env prod -alias null
+
+
+python x509_ida_token.py -crt bootstrap.ida.dev.aws.jpmchase.net.cer -key bootstrap.ida.dev.aws.jpmchase.net.privatekey -pass_phrase null -client_id CC-110252-B006614-147256-DEV -resource_id JPMC:URI:RS-103752-20266-GTIDPOServiceMgt-DEV -env dev -alias null
+
+
+python x509_ida_token.py -crt bootstrap.ida.uat.aws.jpmchase.net.cer -key bootstrap.ida.uat.aws.jpmchase.net.privatekey -pass_phrase null -client_id CC-110252-A016175-174870-UAT -resource_id JPMC:URI:RS-103752-21345-GTIDPOServiceMgt-UAT -env uat -alias null
+
+curl -sk https://idag2.jpmorganchase.com/adfs/oauth2/token/ -d "client_id=PC-102491-SID-43498-PROD&grant_type=password&username=AD\N770057&password=mV97CHuw&resource=JPMC:URI:RS-102491-24576-AquaImageScanner-PROD"
+
+
+curl -sk https://idauatg2.jpmorganchase.com/adfs/oauth2/token/ -d "client_id=PC-102491-SID-43379-UAT&grant_type=password&username=AD\N770057&password=mV97CHuw&resource=JPMC:URI:RS-102491-24575-AquaImageScanner-UAT"
+
+
+Scan :
+
+#NOTE $auth_header contents need to include the 'Bearer' keyword
+#> echo $auth_header
+#> Bearer reallylongstringthatisyourtokenfromidanywherethatisthetokenfromtheaccess_tokenfieldfromthepreviouscurltoidanywhereurl
+
+set auth_header Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IkpKRmRuSURYTngtTERNUWIzR3V4eVpSaC1xZyIsImtpZCI6IkpKRmRuSURYTngtTERNUWIzR3V4eVpSaC1xZyJ9.eyJhdWQiOiJKUE1DOlVSSTpSUy0xMDI0OTEtMjQ1NzYtQXF1YUltYWdlU2Nhbm5lci1QUk9EIiwiaXNzIjoiaHR0cDovL2lkYS5qcG1vcmdhbmNoYXNlLmNvbS9hZGZzL3NlcnZpY2VzL3RydXN0IiwiaWF0IjoxNjYxOTU2MTc0LCJuYmYiOjE2NjE5NTYxNzQsImV4cCI6MTY2MTk1OTc3NCwiSlBNQ0lkZW50aWZpZXIiOiJXNjAwOTE3IiwiRW1wbG95ZWVDb3Jwb3JhdGVJRCI6Ilc2MDA5MTciLCJDbGllbnRJUEFkZHJlc3MiOiIxNjkuMTAzLjEwMC44OSIsImFwcHR5cGUiOiJQdWJsaWMiLCJhcHBpZCI6IlBDLTEwMjQ5MS1TSUQtNDM0OTgtUFJPRCIsImF1dGhtZXRob2QiOiJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YWM6Y2xhc3NlczpQYXNzd29yZFByb3RlY3RlZFRyYW5zcG9ydCIsImF1dGhfdGltZSI6IjIwMjItMDgtMzFUMTQ6Mjk6MzQuMTk0WiIsInZlciI6IjEuMCJ9.U19K8W0ZfiorVFb3ogSIVK66bN6Dfe4UmoW4IHAFIa_ID1ojIn12JuTgcnK0GrFvaaQ1Jeqo-DM4HhpjRKj0Iu9tekDFiOkfUF27_OyTMle-jtMh4L59yTfZ5H0HozF4917m6OHraJMbaayffUdxnbvy5QHxC5rAXYq3jag_j28XkatSJXT6MgxMtLWTnnHNhpkJ_g9Y6CHZaL4QYTfyw7-YcwCddXzu1OhqinKcwZ6Wxs4P6F3kpm8fTMtZsDjRF-FHIyWrrfKyQ8qkVSHu6BcHZ5NhoEA4bU8qTzd4lFFftRL2I_TjPva7W9etcU9joQ6yeUGnalLUBv8-_zjLdg
+
+ 
+curl -s -X POST -H "Content-Type: application/json" -H "Authorization: $auth_header" https://imagescanning.jpmchase.net/api/v1/scan -d '{"registry" : "containerregistry-na.jpmchase.net" , "repository" : "container-sandbox/awmaernd/bootstrap/i046364-eks-hello", "tag" : "54"}'
+
+curl -s -X POST -H "Content-Type: application/json" -H "Authorization: $auth_header" https://imagescanning.jpmchase.net/api/v1/status -d '{"registry" : "containerregistry-na.jpmchase.net" , "repository" : "container-sandbox/awmaernd/bootstrap/i046364-eks-hello", "tag" : "54"}'
+
+
+curl -s -X GET -H "Content-Type: application/json" -H "Authorization: $auth_header" https://api-s2-uat-mitra.jpmchase.net/gti-it-service-mgt/change/v7/changes/CHG9906476?view=summary 
+
+
+
