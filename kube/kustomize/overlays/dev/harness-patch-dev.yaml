@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: i046364-eks-hello
+spec:
+  selector:
+    matchLabels:
+      app: i046364-eks-hello
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - name: i046364-eks-hello
+          image: <+pipeline.stages.Build.spec.execution.steps.Build_and_Push_to_DockerHub["artifact-Build_and_Push_to_DockerHub"].stepArtifacts.publishedImageArtifacts[0].imageName>:<+pipeline.stages.Build.spec.execution.steps.Build_and_Push_to_DockerHub["artifact-Build_and_Push_to_DockerHub"].stepArtifacts.publishedImageArtifacts[0].tag>
+          env:
+            - name: INFO_KUBE_ENV
+              value: <+pipeline.stages.Deploy_to_Dev.spec.infrastructure.infrastructureDefinition.spec.output.environment.name>
+            - name: INFO_KUBE_CLUSTER
+              value: <+pipeline.stages.Build.spec.infrastructure.spec.namespace>
+            - name: INFO_KUBE_IMAGE
+              value: <+pipeline.stages.Build.spec.execution.steps.Build_and_Push_to_DockerHub["artifact-Build_and_Push_to_DockerHub"].stepArtifacts.publishedImageArtifacts[0].imageName>:<+pipeline.stages.Build.spec.execution.steps.Build_and_Push_to_DockerHub["artifact-Build_and_Push_to_DockerHub"].stepArtifacts.publishedImageArtifacts[0].tag>

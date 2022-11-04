@@ -1,0 +1,8 @@
+bases:
+  - ../../base/
+
+
+configMapGenerator:
+  - name: app-runtime
+    literals:
+      - SPRING_PROFILES_ACTIVE=dev

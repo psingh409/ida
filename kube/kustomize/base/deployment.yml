@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ida
+spec:
+  selector:
+    matchLabels:
+      app: ida
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: ida
+    spec:
+      securityContext:
+        runAsUser: 999
+      imagePullSecrets:
+        - name: image-pull-secret
+      containers:
+        - name: ida
+          image: app-image
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 10m
+            limits:
+              memory: 1Gi
+              cpu: 500m
+          ports:
+            - containerPort: 8443
+          envFrom:
+            - configMapRef:
+                name: app-runtime
+          env:
+            # JVM Memory Settings for 1Gi total container memory. Bump the -Xmx setting to match any increase to container memory.
+            - name: JAVA_OPTS
+              value: -XX:MaxDirectMemorySize=10M -XX:MaxMetaspaceSize=105M -XX:ReservedCodeCacheSize=240M -Xss1M -Xmx420M
+            # Use X-Forwarded-* headers from Ingress to detect end-client information correctly
+            - name: SERVER_USE_FORWARD_HEADERS
+              value: "true"
+            - name: SERVER_TOMCAT_REMOTEIP_INTERNAL_PROXIES
+              value: .*
+            # Kubernetes related info for Actuator
+            - name: INFO_KUBE_ENV
+              value: ${environment}
+            - name: INFO_KUBE_CLUSTER
+              value: ${cluster}
+            - name: INFO_KUBE_IMAGE
+              value: ${containerImageUri}
+            - name: INFO_KUBE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: INFO_KUBE_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: INFO_KUBE_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: INFO_KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+#          readinessProbe:
+#            httpGet:
+#              path: /actuator/keepalive
+#              port: 8080
+#            timeoutSeconds: 5
+#            initialDelaySeconds: 15
+#            periodSeconds: 10
+#          livenessProbe:
+#            httpGet:
+#              path: /actuator/keepalive
+#              port: 8080
+#            timeoutSeconds: 5
+#            initialDelaySeconds: 15
+#            periodSeconds: 10
