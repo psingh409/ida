@@ -10,7 +10,6 @@ ADD bootstrap.ida.uat.aws.jpmchase.net.cer /
 ADD bootstrap.ida.uat.aws.jpmchase.net.privatekey /
 RUN pip3 install pyjks 
 RUN pip3 install boto3 
-RUN pip3 install jks
 RUN pip3 install pyjks 
 RUN pip3 install requests 
 RUN pip3 install PyJWT 
