@@ -9,8 +9,8 @@ ADD x509_ida_token.py /
 ADD bootstrap.ida.uat.aws.jpmchase.net.cer /
 ADD bootstrap.ida.uat.aws.jpmchase.net.privatekey /
 RUN pip3 install pyjks 
+RUN pip3 install OpenSSL
 RUN pip3 install boto3 
-RUN pip3 install pyjks 
 RUN pip3 install requests 
 RUN pip3 install PyJWT 
 #CMD [ "ls -ltr"]
